@@ -6,7 +6,9 @@
 #include "PauseMenuWidget.generated.h"
 enum EMouseCursor::Type : int;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeCursor, EMouseCursor::Type, CursorType);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeCursorSig, EMouseCursor::Type, CursorType);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnShowSig);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHideSig);
 /**
  * 
  */
@@ -16,8 +18,16 @@ class ASSIGNMENT_API UPauseMenuWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	UPROPERTY(BlueprintAssignable)
-	FOnChangeCursor OnChangeCursor;
+	FOnChangeCursorSig OnChangeCursor;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnShowSig OnShowScreen;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnHideSig OnHideScreen;
 
 	void SetCursor(EMouseCursor::Type CursorType);
 
+	void OnShow();
+	void OnHide();
 };

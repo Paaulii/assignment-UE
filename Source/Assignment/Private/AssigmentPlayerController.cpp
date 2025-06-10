@@ -10,6 +10,8 @@
 void AAssigmentPlayerController::BeginPlay()
 {
 	bPauseMenuActive = false;
+	bHidePauseMenuTimerSet = false;
+
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
@@ -37,15 +39,21 @@ void AAssigmentPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReaso
 
 void AAssigmentPlayerController::TogglePauseMenu()
 {
+	if (bHidePauseMenuTimerSet) {
+		return;
+	}
+
 	bPauseMenuActive = !bPauseMenuActive;
 	if (bPauseMenuActive) {
 		PauseMenuWidget->AddToViewport();
 		SetInputMode(FInputModeGameAndUI());
 		AdjustViewportPerPlatform();
+		PauseMenuWidget->OnShow();
 	}
 	else {
-		PauseMenuWidget->RemoveFromParent();
-		SetInputMode(FInputModeGameOnly());
+		bHidePauseMenuTimerSet = true;
+		PauseMenuWidget->OnHide();
+		GetWorldTimerManager().SetTimer(HideTimer, this, &AAssigmentPlayerController::HidePauseMenu, HidePauseMenuTimeout, false);
 	}
 }
 
@@ -60,7 +68,6 @@ void AAssigmentPlayerController::SetupUI()
 	if (HudWidget != nullptr && HudViewModel != nullptr) {
 		HudWidget->SetViewModel(HudViewModel);
 		HudWidget->AddToViewport();
-
 	}
 }
 
@@ -75,6 +82,13 @@ void AAssigmentPlayerController::AdjustViewportPerPlatform()
 void AAssigmentPlayerController::HandleHardwareDeviceChanged(const FPlatformUserId UserId, const FInputDeviceId DeviceId)
 {
 	//AdjustViewportPerPlatform();
+}
+
+void AAssigmentPlayerController::HidePauseMenu()
+{
+	PauseMenuWidget->RemoveFromParent();
+	SetInputMode(FInputModeGameOnly());
+	bHidePauseMenuTimerSet = false;
 }
 
 EHardwareDevicePrimaryType AAssigmentPlayerController::GetPlayerRecentlyUsedDeviceType() const

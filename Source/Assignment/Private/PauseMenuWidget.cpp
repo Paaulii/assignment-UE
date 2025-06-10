@@ -8,3 +8,13 @@ void UPauseMenuWidget::SetCursor(EMouseCursor::Type CursorType)
 {
 	OnChangeCursor.Broadcast(CursorType);
 }
+
+void UPauseMenuWidget::OnShow()
+{
+	OnShowScreen.Broadcast();
+}
+
+void UPauseMenuWidget::OnHide()
+{
+	OnHideScreen.Broadcast();
+}

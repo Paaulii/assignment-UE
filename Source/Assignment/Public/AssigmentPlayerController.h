@@ -22,17 +22,24 @@ class ASSIGNMENT_API AAssigmentPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 protected:
+	UPROPERTY(EditAnywhere, Category = "Pause Menu Config")
+	float HidePauseMenuTimeout;
+
 	UPROPERTY(EditAnywhere, Category = "Widget Class")
 	TSubclassOf<UPauseMenuWidget> PauseMenuWidgetClass;
 
 	UPROPERTY(EditAnywhere, Category = "Widget Class")
 	TSubclassOf<UHUDWidget> HudWidgetClass;
 
+	FTimerHandle HideTimer;
+
 	virtual void BeginPlay() override;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 private:
-	uint8 bPauseMenuActive:1;
+	uint8 bPauseMenuActive : 1;
+
+	uint8 bHidePauseMenuTimerSet:1;
 
 	FInputModeGameAndUI InputMode;
 
@@ -62,5 +69,6 @@ private:
 
 	void AdjustViewportPerPlatform();
 
+	void HidePauseMenu();
 	EHardwareDevicePrimaryType GetPlayerRecentlyUsedDeviceType() const;
 };
