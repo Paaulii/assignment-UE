@@ -9,6 +9,7 @@ enum EMouseCursor::Type : int;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnShowViewSig);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHideViewSig);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnViewHiddenSig);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeCursorSig, EMouseCursor::Type, CursorType);
 
 UCLASS()
@@ -25,6 +26,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnHideViewSig OnHideView;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnViewHiddenSig OnViewHidden;
 
 	UFUNCTION(BlueprintCallable)
 	void SetHidePauseMenuTimeout(float Timeout);

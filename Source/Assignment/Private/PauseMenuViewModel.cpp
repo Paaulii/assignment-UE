@@ -47,6 +47,7 @@ void UPauseMenuViewModel::HidePauseMenu()
 {
 	PlayerController->SetPauseMenuVisible(false);
 	bHidePauseMenuTimerSet = false;
+	OnViewHidden.Broadcast();
 }
 
 void UPauseMenuViewModel::SetHidePauseMenuTimeout(float Timeout)
