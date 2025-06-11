@@ -1,4 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -6,11 +5,8 @@
 #include "Blueprint/UserWidget.h"
 #include "HUDWidget.generated.h"
 class UHUDViewModel;
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnViewModelUpdatedSignature, UHUDViewModel*, ViewModel);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHUDViewModelUpdatedSig, UHUDViewModel*, ViewModel);
 
-/**
- * 
- */
 UCLASS()
 class ASSIGNMENT_API UHUDWidget : public UUserWidget
 {
@@ -19,5 +15,5 @@ public:
 	void SetViewModel(UHUDViewModel* HUDViewModel);
 protected:
 	UPROPERTY(BlueprintAssignable)
-	FOnViewModelUpdatedSignature OnViewModelUpdated;
+	FOnHUDViewModelUpdatedSig OnViewModelUpdated;
 };

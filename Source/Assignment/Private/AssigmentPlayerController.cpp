@@ -3,15 +3,13 @@
 #include "PlayerCharacter.h"
 #include "HUDViewModel.h"
 #include "PauseMenuWidget.h"
+#include "PauseMenuViewModel.h"
 #include "HUDWidget.h"
 #include "GameFramework/InputDeviceSubsystem.h"
 #include "GameFramework/InputDeviceProperties.h"
 
 void AAssigmentPlayerController::BeginPlay()
 {
-	bPauseMenuActive = false;
-	bHidePauseMenuTimerSet = false;
-
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
@@ -20,41 +18,29 @@ void AAssigmentPlayerController::BeginPlay()
 	PlayerCharacter = Cast<APlayerCharacter>(GetCharacter());
 
 	if (PlayerCharacter != nullptr) {
-
-		PlayerCharacter->PauseButtonPressed.AddDynamic(this, &AAssigmentPlayerController::TogglePauseMenu);
 		SetupUI();
 	}
-
-	InputDeviceSubsystem = UInputDeviceSubsystem::Get();
-	InputDeviceSubsystem->OnInputHardwareDeviceChanged.AddDynamic( this, &AAssigmentPlayerController::HandleHardwareDeviceChanged);
 }
 
-void AAssigmentPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void AAssigmentPlayerController::SetPauseMenuVisible(bool bIsVisible)
 {
-	Super::EndPlay(EndPlayReason);
-	PlayerCharacter->PauseButtonPressed.RemoveDynamic(this, &AAssigmentPlayerController::TogglePauseMenu);
-	PauseMenuWidget->RemoveFromParent();
-	HudWidget->RemoveFromParent();
-}
-
-void AAssigmentPlayerController::TogglePauseMenu()
-{
-	if (bHidePauseMenuTimerSet) {
+	if (PauseMenuWidget == nullptr) {
 		return;
 	}
 
-	bPauseMenuActive = !bPauseMenuActive;
-	if (bPauseMenuActive) {
+	if (bIsVisible) {
 		PauseMenuWidget->AddToViewport();
 		SetInputMode(FInputModeGameAndUI());
-		AdjustViewportPerPlatform();
-		PauseMenuWidget->OnShow();
 	}
 	else {
-		bHidePauseMenuTimerSet = true;
-		PauseMenuWidget->OnHide();
-		GetWorldTimerManager().SetTimer(HideTimer, this, &AAssigmentPlayerController::HidePauseMenu, HidePauseMenuTimeout, false);
+		PauseMenuWidget->RemoveFromParent();
+		SetInputMode(FInputModeGameOnly());
 	}
+}
+
+void AAssigmentPlayerController::QuitGame()
+{
+	this->ConsoleCommand("quit");
 }
 
 void AAssigmentPlayerController::SetupUI()
@@ -62,43 +48,19 @@ void AAssigmentPlayerController::SetupUI()
 	HudViewModel = NewObject<UHUDViewModel>();
 	HudViewModel->SetModel(PlayerCharacter);
 
+	PauseMenuViewModel = NewObject<UPauseMenuViewModel>();
+	PauseMenuViewModel->SetModels(PlayerCharacter, this );
+
 	PauseMenuWidget = CreateWidget<UPauseMenuWidget>(GetWorld(), PauseMenuWidgetClass);
+
+	if (PauseMenuWidget != nullptr && PauseMenuViewModel != nullptr) {
+		PauseMenuWidget->SetViewModel(PauseMenuViewModel);
+	}
+
 	HudWidget = CreateWidget<UHUDWidget>(GetWorld(), HudWidgetClass);
 
 	if (HudWidget != nullptr && HudViewModel != nullptr) {
 		HudWidget->SetViewModel(HudViewModel);
 		HudWidget->AddToViewport();
 	}
-}
-
-void AAssigmentPlayerController::AdjustViewportPerPlatform()
-{
-	EHardwareDevicePrimaryType LastUsedDevice = GetPlayerRecentlyUsedDeviceType();
-	EMouseCursor::Type CursorType = LastUsedDevice == EHardwareDevicePrimaryType::KeyboardAndMouse? 
-		EMouseCursor::Type::Default : EMouseCursor::Type::None;
-	PauseMenuWidget->SetCursor(CursorType);
-}
-
-void AAssigmentPlayerController::HandleHardwareDeviceChanged(const FPlatformUserId UserId, const FInputDeviceId DeviceId)
-{
-	//AdjustViewportPerPlatform();
-}
-
-void AAssigmentPlayerController::HidePauseMenu()
-{
-	PauseMenuWidget->RemoveFromParent();
-	SetInputMode(FInputModeGameOnly());
-	bHidePauseMenuTimerSet = false;
-}
-
-EHardwareDevicePrimaryType AAssigmentPlayerController::GetPlayerRecentlyUsedDeviceType() const
-{
-	if (InputDeviceSubsystem != nullptr)
-	{
-		FHardwareDeviceIdentifier HardwareDevice = InputDeviceSubsystem->GetMostRecentlyUsedHardwareDevice(GetPlatformUserId());
-		UE_LOG(LogTemp, Warning, TEXT("%d"), HardwareDevice.PrimaryDeviceType)
-		return HardwareDevice.PrimaryDeviceType;
-	}
-
-	return EHardwareDevicePrimaryType::Unspecified;
 }

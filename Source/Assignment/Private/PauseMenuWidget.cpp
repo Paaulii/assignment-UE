@@ -1,20 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "PauseMenuWidget.h"
 #include "GenericPlatform/ICursor.h"
 
-void UPauseMenuWidget::SetCursor(EMouseCursor::Type CursorType)
+void UPauseMenuWidget::SetViewModel(UPauseMenuViewModel* PauseMenuViewModel)
 {
-	OnChangeCursor.Broadcast(CursorType);
-}
-
-void UPauseMenuWidget::OnShow()
-{
-	OnShowScreen.Broadcast();
-}
-
-void UPauseMenuWidget::OnHide()
-{
-	OnHideScreen.Broadcast();
+	ViewModel = PauseMenuViewModel;
+	OnViewModelUpdated.Broadcast(PauseMenuViewModel);
 }

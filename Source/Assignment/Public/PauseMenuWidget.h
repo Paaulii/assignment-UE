@@ -5,29 +5,24 @@
 #include "Blueprint/UserWidget.h"
 #include "PauseMenuWidget.generated.h"
 enum EMouseCursor::Type : int;
+class UPauseMenuViewModel;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeCursorSig, EMouseCursor::Type, CursorType);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnShowSig);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnHideSig);
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPauseMenuViewModelUpdatedSig, UPauseMenuViewModel*, ViewModel);
+
 UCLASS()
 class ASSIGNMENT_API UPauseMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pause Menu Config")
+	float HidePauseMenuTimeout;
+
+	UPauseMenuViewModel* ViewModel;
+
+	void SetViewModel(UPauseMenuViewModel* PauseMenuViewModel);
+protected:
 	UPROPERTY(BlueprintAssignable)
-	FOnChangeCursorSig OnChangeCursor;
+	FOnPauseMenuViewModelUpdatedSig OnViewModelUpdated;
 
-	UPROPERTY(BlueprintAssignable)
-	FOnShowSig OnShowScreen;
-
-	UPROPERTY(BlueprintAssignable)
-	FOnHideSig OnHideScreen;
-
-	void SetCursor(EMouseCursor::Type CursorType);
-
-	void OnShow();
-	void OnHide();
+	FTimerHandle HideTimer;
 };
