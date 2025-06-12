@@ -15,14 +15,13 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnChangeHealthState OnChangeHealthState;
 
-	UFUNCTION()
-	float GetProgressFillPercentage() const;
-
 	void SetModel(APlayerCharacter* PlayerCharacter) override;
 protected:
-	UPROPERTY(BlueprintReadOnly, FieldNotify, Setter, Getter, Category = "ViewModel")
+	UPROPERTY(BlueprintReadOnly, FieldNotify, Setter, Category = "ViewModel")
 	float ProgressFillPercentage;
 
+	UPROPERTY(BlueprintReadOnly, FieldNotify,Setter, Category = "ViewModel")
+	float Health;
 private:
 	EHealthState LastHealthState;
 
@@ -33,5 +32,8 @@ private:
 	UFUNCTION()
 	void SetProgressFillPercentage(float Value);
 
-	void ChangeHealthState(float Health);
+	UFUNCTION()
+	void SetHealth(float Value);
+
+	void ChangeHealthState();
 };

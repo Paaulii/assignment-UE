@@ -2,12 +2,6 @@
 #include "PlayerCharacter.h"
 #include "Enums.h"
 
-
-float UHUDViewModel::GetProgressFillPercentage() const
-{
-	return ProgressFillPercentage;
-}
-
 void UHUDViewModel::SetModel(APlayerCharacter* PlayerCharacter)
 {
 	Super::SetModel(PlayerCharacter);
@@ -25,11 +19,20 @@ void UHUDViewModel::SetProgressFillPercentage(float Value)
 	if (UE_MVVM_SET_PROPERTY_VALUE(ProgressFillPercentage, Percentage))
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ProgressFillPercentage);
-		ChangeHealthState(Value);
+		SetHealth(Value);
+		ChangeHealthState();
 	}
 }
 
-void UHUDViewModel::ChangeHealthState(float Health)
+void UHUDViewModel::SetHealth(float Value)
+{
+	if (UE_MVVM_SET_PROPERTY_VALUE(Health, Value))
+	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(Health);
+	}
+}
+
+void UHUDViewModel::ChangeHealthState()
 {
 	EHealthState HealthState = EHealthState::Default;
 
