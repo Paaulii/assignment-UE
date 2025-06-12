@@ -4,7 +4,10 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 class UInputAction;
+enum class EHealthIncrementMode: uint8;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPauseButtonPressedSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSig, float, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnergyChangedSig, float, Value);
 
 UCLASS()
 class ASSIGNMENT_API APlayerCharacter : public ACharacter
@@ -13,12 +16,54 @@ class ASSIGNMENT_API APlayerCharacter : public ACharacter
 
 public:
 	UPROPERTY(BlueprintAssignable)
+	FOnHealthChangedSig OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnEnergyChangedSig OnEnergyChanged;
+
+	UPROPERTY(BlueprintAssignable)
 	FPauseButtonPressedSignature PauseButtonPressed;
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	APlayerCharacter();
-	void PauseActionButtonPressed();
-private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	float GetMaxHealth();
+	float GetHealth();
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	float EnergyIncrementValue;
+
+	UPROPERTY(EditDefaultsOnly)
+	float HealthDecrementValue;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float Energy;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float Health;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float MaxHealth;
+
+	UPROPERTY(EditDefaultsOnly, Category = Input)
 	UInputAction* PauseAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	UInputAction* ChangeHealthAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	UInputAction* LeftSlotActivateAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	UInputAction* MiddleSlotActivateAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	UInputAction* RightSlotActivateAction;
+private:
+	EHealthIncrementMode IncrementMode;
+	void PauseActionButtonPressed();
+	void ChangeHealth();
+	void HandleLeftSlotActivate();
+	void HandleMiddleSlotActivate();
+	void HandleRightSlotActivate();
+	void HandleSlotActivation(int8 SlotNumber);
 };

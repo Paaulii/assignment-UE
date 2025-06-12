@@ -17,7 +17,6 @@ class ASSIGNMENT_API UPauseMenuViewModel : public UViewModelBase
 {
 	GENERATED_BODY()
 public:
-
 	UPROPERTY(BlueprintAssignable)
 	FOnChangeCursorSig OnChangeCursor;
 
