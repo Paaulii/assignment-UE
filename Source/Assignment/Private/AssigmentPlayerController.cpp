@@ -40,27 +40,35 @@ void AAssigmentPlayerController::SetPauseMenuVisible(bool bIsVisible)
 
 void AAssigmentPlayerController::QuitGame()
 {
-	this->ConsoleCommand("quit");
+	ConsoleCommand("quit");
 }
 
 void AAssigmentPlayerController::SetupUI()
 {
-	HudViewModel = NewObject<UHUDViewModel>();
-	HudViewModel->SetModel(PlayerCharacter);
+	if (HudViewModelClass != nullptr && HudWidgetClass != nullptr) 
+	{
+		HudViewModel = NewObject<UHUDViewModel>(this, HudViewModelClass);
+		HudViewModel->SetModel(PlayerCharacter);
 
-	PauseMenuViewModel = NewObject<UPauseMenuViewModel>();
-	PauseMenuViewModel->SetModels(PlayerCharacter, this );
+		HudWidget = CreateWidget<UHUDWidget>(GetWorld(), HudWidgetClass);
 
-	PauseMenuWidget = CreateWidget<UPauseMenuWidget>(GetWorld(), PauseMenuWidgetClass);
-
-	if (PauseMenuWidget != nullptr && PauseMenuViewModel != nullptr) {
-		PauseMenuWidget->SetViewModel(PauseMenuViewModel);
+		if (HudWidget != nullptr && HudViewModel != nullptr) 
+		{
+			HudWidget->SetViewModel(HudViewModel);
+			HudWidget->AddToViewport();
+		}
 	}
 
-	HudWidget = CreateWidget<UHUDWidget>(GetWorld(), HudWidgetClass);
+	if (PauseMenuViewModelClass != nullptr && PauseMenuWidgetClass != nullptr) 
+	{
+		PauseMenuViewModel = NewObject<UPauseMenuViewModel>(this, PauseMenuViewModelClass);
+		PauseMenuViewModel->SetModels(PlayerCharacter, this);
 
-	if (HudWidget != nullptr && HudViewModel != nullptr) {
-		HudWidget->SetViewModel(HudViewModel);
-		HudWidget->AddToViewport();
+		PauseMenuWidget = CreateWidget<UPauseMenuWidget>(GetWorld(), PauseMenuWidgetClass);
+
+		if (PauseMenuWidget != nullptr && PauseMenuViewModel != nullptr) 
+		{
+			PauseMenuWidget->SetViewModel(PauseMenuViewModel);
+		}
 	}
 }

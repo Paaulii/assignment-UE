@@ -4,7 +4,7 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 class UInputAction;
-enum class EHealthIncrementMode: uint8;
+enum class EHealthIncrementMode : uint8;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPauseButtonPressedSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSig, float, Value);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnergyChangedSig, float, Value);
@@ -15,6 +15,34 @@ class ASSIGNMENT_API APlayerCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
+	APlayerCharacter();
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	float GetHealth() const
+	{
+		return Health;
+	}
+
+	float GetEnergy() const
+	{
+		return Energy;
+	}
+
+	float GetMaxHealth() const
+	{
+		return MaxHealth;
+	}
+
+	float GetMaxEnergy() const
+	{
+		return MaxEnergy;
+	}
+
+	float GetEnergyIncrementValue() const
+	{
+		return EnergyIncrementValue;
+	}
+
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChangedSig OnHealthChanged;
 
@@ -24,16 +52,14 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FPauseButtonPressedSignature PauseButtonPressed;
 
-	APlayerCharacter();
-	float GetMaxHealth();
-	float GetHealth();
-	float GetEnergy();
-	float GetMaxEnergy();
-	float GetEnergyIncrementValue();
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	virtual void PostInitializeComponents() override;
+
+	UPROPERTY(BlueprintReadOnly)
 	float Energy;
+
+	UPROPERTY(BlueprintReadOnly)
+	float Health;
 
 	UPROPERTY(EditDefaultsOnly)
 	float MaxEnergy;
@@ -43,9 +69,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	float HealthIncrementValue;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float Health;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float MaxHealth;
@@ -65,14 +88,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 	UInputAction* RightSlotActivateAction;
 
-	virtual void PostInitializeComponents() override;
 private:
+	void PauseActionButtonPressed();
+	void HandleLeftSlotActivation();
+	void HandleMiddleSlotActivation();
+	void HandleRightSlotActivation();
+	void ChangeHealth();
+	void HandleSlotActivation(int8 SlotNumber);
+
 	float EnergyIncrementValue;
 	EHealthIncrementMode IncrementMode;
-	void PauseActionButtonPressed();
-	void ChangeHealth();
-	void HandleLeftSlotActivate();
-	void HandleMiddleSlotActivate();
-	void HandleRightSlotActivate();
-	void HandleSlotActivation(int8 SlotNumber);
 };

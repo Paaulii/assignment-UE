@@ -12,7 +12,7 @@ enum class EHealthState : uint8
     Dead UMETA(DisplayName = "Dead")
 };
 
-enum class EHealthIncrementMode: uint8
+enum class EHealthIncrementMode : uint8
 {
     Increment,
     Decrement

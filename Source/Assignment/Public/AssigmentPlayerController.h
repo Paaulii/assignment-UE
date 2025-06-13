@@ -23,15 +23,24 @@ public:
 	void SetPauseMenuVisible(bool bIsVisible);
 	void QuitGame();
 protected:
-	UPROPERTY(EditAnywhere, Category = "Widget Class")
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI|Widget")
 	TSubclassOf<UPauseMenuWidget> PauseMenuWidgetClass;
 
-	UPROPERTY(EditAnywhere, Category = "Widget Class")
+	UPROPERTY(EditDefaultsOnly, Category = "UI|Widget")
 	TSubclassOf<UHUDWidget> HudWidgetClass;
 
-	virtual void BeginPlay() override;
+	UPROPERTY(EditDefaultsOnly, Category = "UI|Viewmodels")
+	TSubclassOf<UHUDViewModel> HudViewModelClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI|Viewmodels")
+	TSubclassOf<UPauseMenuViewModel> PauseMenuViewModelClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	UInputMappingContext* DefaultMappingContext;
 private:
-	APlayerCharacter* PlayerCharacter;
+	void SetupUI();
 
 	UPROPERTY()
 	TObjectPtr<UPauseMenuWidget> PauseMenuWidget;
@@ -39,11 +48,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<UHUDWidget> HudWidget;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* DefaultMappingContext;
-
+	APlayerCharacter* PlayerCharacter;
 	UHUDViewModel* HudViewModel;
 	UPauseMenuViewModel* PauseMenuViewModel;
-
-	void SetupUI();
 };

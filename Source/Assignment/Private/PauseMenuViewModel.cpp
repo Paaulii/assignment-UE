@@ -9,33 +9,32 @@ void UPauseMenuViewModel::SetModels(APlayerCharacter* PlayerCharacter, AAssigmen
 {
 	Super::SetModel(PlayerCharacter);
 	PlayerController = Controller;
-	bPauseMenuActive = false;
-	bHidePauseMenuTimerSet = false;
-
 	Model->PauseButtonPressed.AddDynamic(this, &UPauseMenuViewModel::TogglePauseMenu);
-	InputDeviceSubsystem = UInputDeviceSubsystem::Get();
 }
 
 void UPauseMenuViewModel::TogglePauseMenu()
 {
-	if (bHidePauseMenuTimerSet) {
+	if (bHidePauseMenuTimerSet) 
+	{
 		return;
 	}
 
 	bPauseMenuActive = !bPauseMenuActive;
-	if (bPauseMenuActive) {
+	if (bPauseMenuActive)
+	{
 		PlayerController->SetPauseMenuVisible(true);
 		AdjustViewportPerPlatform();
 		OnShowView.Broadcast();
 	}
-	else {
+	else 
+	{
 		bHidePauseMenuTimerSet = true;
 		OnHideView.Broadcast();
 		PlayerController->GetWorldTimerManager().SetTimer(HideTimer, this, &UPauseMenuViewModel::HidePauseMenu, HidePauseMenuTimeout, false);
 	}
 }
 
-void UPauseMenuViewModel::AdjustViewportPerPlatform()
+void UPauseMenuViewModel::AdjustViewportPerPlatform() const
 {
 	EHardwareDevicePrimaryType LastUsedDevice = GetPlayerRecentlyUsedDeviceType();
 	EMouseCursor::Type CursorType = LastUsedDevice == EHardwareDevicePrimaryType::KeyboardAndMouse ?
@@ -50,12 +49,7 @@ void UPauseMenuViewModel::HidePauseMenu()
 	OnViewHidden.Broadcast();
 }
 
-void UPauseMenuViewModel::SetHidePauseMenuTimeout(float Timeout)
-{
-	HidePauseMenuTimeout = Timeout;
-}
-
-void UPauseMenuViewModel::QuitGame()
+void UPauseMenuViewModel::QuitGame() const
 {
 	PlayerController->QuitGame();
 }
@@ -67,7 +61,9 @@ void UPauseMenuViewModel::ReturnToGame()
 
 EHardwareDevicePrimaryType UPauseMenuViewModel::GetPlayerRecentlyUsedDeviceType() const
 {
-	if (InputDeviceSubsystem != nullptr && PlayerController)
+	UInputDeviceSubsystem* InputDeviceSubsystem = UInputDeviceSubsystem::Get();
+
+	if ( PlayerController && InputDeviceSubsystem )
 	{
 		FHardwareDeviceIdentifier HardwareDevice = InputDeviceSubsystem->GetMostRecentlyUsedHardwareDevice(PlayerController->GetPlatformUserId());
 		return HardwareDevice.PrimaryDeviceType;
