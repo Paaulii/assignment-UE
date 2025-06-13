@@ -14,15 +14,9 @@ class ASSIGNMENT_API UPauseMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pause Menu Config")
-	float HidePauseMenuTimeout;
-
-	UPauseMenuViewModel* ViewModel;
-
 	void SetViewModel(UPauseMenuViewModel* PauseMenuViewModel);
+	UPauseMenuViewModel* ViewModel;
 protected:
 	UPROPERTY(BlueprintAssignable)
 	FOnPauseMenuViewModelUpdatedSig OnViewModelUpdated;
-
-	FTimerHandle HideTimer;
 };

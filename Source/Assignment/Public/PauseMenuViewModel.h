@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "ViewModelBase.h"
 #include "PauseMenuViewModel.generated.h"
+
 class AAssigmentPlayerController;
 enum class EHardwareDevicePrimaryType : uint8;
 enum EMouseCursor::Type : int;
@@ -17,6 +18,14 @@ class ASSIGNMENT_API UPauseMenuViewModel : public UViewModelBase
 {
 	GENERATED_BODY()
 public:
+	UFUNCTION(BlueprintCallable)
+	void QuitGame() const;
+
+	UFUNCTION(BlueprintCallable)
+	void ReturnToGame();
+
+	void SetModels(APlayerCharacter* PlayerCharacter, AAssigmentPlayerController* Controller);
+
 	UPROPERTY(BlueprintAssignable)
 	FOnChangeCursorSig OnChangeCursor;
 
@@ -28,37 +37,19 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnViewHiddenSig OnViewHidden;
-
-	UFUNCTION(BlueprintCallable)
-	void SetHidePauseMenuTimeout(float Timeout);
-
-	UFUNCTION(BlueprintCallable)
-	void QuitGame();
-
-	UFUNCTION(BlueprintCallable)
-	void ReturnToGame();
-
-	void SetModels(APlayerCharacter* PlayerCharacter, AAssigmentPlayerController* Controller);
-private:
-	uint8 bPauseMenuActive : 1;
-
-	uint8 bHidePauseMenuTimerSet : 1;
-
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Pause Menu Widget Config")
 	float HidePauseMenuTimeout;
-
-	FTimerHandle HideTimer;
-
-	AAssigmentPlayerController* PlayerController;
-
-
-	FInputModeGameAndUI InputMode;
-
-	UInputDeviceSubsystem* InputDeviceSubsystem;
-
+private:
 	UFUNCTION()
 	void TogglePauseMenu();
-
-	void AdjustViewportPerPlatform();
 	void HidePauseMenu();
+	void AdjustViewportPerPlatform() const;
 	EHardwareDevicePrimaryType GetPlayerRecentlyUsedDeviceType() const;
+
+	bool bPauseMenuActive = false;
+	bool bHidePauseMenuTimerSet = false;
+	FTimerHandle HideTimer;
+	AAssigmentPlayerController* PlayerController;
+	FInputModeGameAndUI InputMode;
 };

@@ -1,17 +1,21 @@
 #include "HUDViewModel.h"
 #include "PlayerCharacter.h"
-#include "Enums.h"
 
 void UHUDViewModel::SetModel(APlayerCharacter* PlayerCharacter)
 {
 	Super::SetModel(PlayerCharacter);
 
+	if (Model == nullptr) 
+	{
+		return;
+	}
+
 	Model->OnHealthChanged.AddDynamic(this, &UHUDViewModel::SetProgressFillPercentage);
 	Model->OnEnergyChanged.AddDynamic(this, &UHUDViewModel::SetEnergyFillPercentage);
+
 	MaxHealth = Model->GetMaxHealth();
-	LowHealthTreshold = MaxHealth * 0.25f;
+	LowHealthTreshold = MaxHealth * LowHealthPercentageThreshold;
 	SetProgressFillPercentage(Model->GetHealth());
-	LastHealthState = EHealthState::Default;
 
 	MaxEnergy = Model->GetMaxEnergy();
 	EnergyIncrementValue = Model->GetEnergyIncrementValue();
@@ -60,15 +64,18 @@ void UHUDViewModel::ChangeHealthState()
 {
 	EHealthState HealthState = EHealthState::Default;
 
-	if (Health <= LowHealthTreshold) {
+	if (Health <= LowHealthTreshold) 
+	{
 		HealthState = EHealthState::LowHealth;
 	}
 
-	if (Health == 0) {
+	if (Health <= 0) 
+	{
 		HealthState = EHealthState::Dead;
 	}
 
-	if (LastHealthState != HealthState) {
+	if (LastHealthState != HealthState) 
+	{
 		OnChangeHealthState.Broadcast(LastHealthState, HealthState);
 		LastHealthState = HealthState;
 	}
