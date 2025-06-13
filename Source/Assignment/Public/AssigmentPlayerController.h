@@ -20,6 +20,7 @@ class ASSIGNMENT_API AAssigmentPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 public:
+	void SetGamePaused(bool bIsPaused);
 	void SetPauseMenuVisible(bool bIsVisible);
 	void QuitGame();
 protected:

@@ -22,6 +22,11 @@ void AAssigmentPlayerController::BeginPlay()
 	}
 }
 
+void AAssigmentPlayerController::SetGamePaused(bool bIsPaused)
+{
+	SetPause(bIsPaused);
+}
+
 void AAssigmentPlayerController::SetPauseMenuVisible(bool bIsVisible)
 {
 	if (PauseMenuWidget == nullptr) {

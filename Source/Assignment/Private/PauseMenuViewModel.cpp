@@ -24,10 +24,12 @@ void UPauseMenuViewModel::TogglePauseMenu()
 	{
 		PlayerController->SetPauseMenuVisible(true);
 		AdjustViewportPerPlatform();
+		PlayerController->SetGamePaused(true);
 		OnShowView.Broadcast();
 	}
 	else 
 	{
+		PlayerController->SetGamePaused(false);
 		bHidePauseMenuTimerSet = true;
 		OnHideView.Broadcast();
 		PlayerController->GetWorldTimerManager().SetTimer(HideTimer, this, &UPauseMenuViewModel::HidePauseMenu, HidePauseMenuTimeout, false);
