@@ -47,9 +47,11 @@ private:
 	void AdjustViewportPerPlatform() const;
 	EHardwareDevicePrimaryType GetPlayerRecentlyUsedDeviceType() const;
 
+	UPROPERTY()
+	TObjectPtr<AAssigmentPlayerController> PlayerController = nullptr;
+
 	bool bPauseMenuActive = false;
 	bool bHidePauseMenuTimerSet = false;
 	FTimerHandle HideTimer;
-	AAssigmentPlayerController* PlayerController;
 	FInputModeGameAndUI InputMode;
 };

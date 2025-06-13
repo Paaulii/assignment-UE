@@ -18,19 +18,19 @@ public:
 	FOnChangeHealthState OnChangeHealthState;
 protected:
 	UPROPERTY(BlueprintReadOnly, FieldNotify, Setter, Category = "ViewModel")
-	float ProgressFillPercentage;
+	float ProgressFillPercentage = 0.0f;
 
 	UPROPERTY(BlueprintReadOnly, FieldNotify, Setter, Category = "ViewModel")
-	float EnergyFillPercentage;
+	float EnergyFillPercentage = 0.0f;
 
 	UPROPERTY(BlueprintReadOnly, FieldNotify, Setter, Category = "ViewModel")
-	uint8 ActiveSlotsNumber;
+	uint8 ActiveSlotsNumber = 0;
 
 	UPROPERTY(BlueprintReadOnly, FieldNotify, Setter, Category = "ViewModel")
-	float Health;
+	float Health = 0.0f;
 
 	UPROPERTY(EditDefaultsOnly)
-	float LowHealthPercentageThreshold;
+	float LowHealthPercentageThreshold = 0.0f;
 private:
 	UFUNCTION()
 	void SetProgressFillPercentage(float Value);
@@ -46,9 +46,9 @@ private:
 
 	void ChangeHealthState();
 
-	float MaxHealth;
-	float LowHealthTreshold;
-	float MaxEnergy;
+	float MaxHealth = 0.0f;
+	float LowHealthTreshold = 0.0f;
+	float MaxEnergy = 0.0f;
 	EHealthState LastHealthState = EHealthState::Default;
-	uint8 EnergyIncrementValue;
+	uint8 EnergyIncrementValue = 0.0f;
 };

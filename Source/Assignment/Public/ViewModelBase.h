@@ -12,5 +12,6 @@ class ASSIGNMENT_API UViewModelBase : public UMVVMViewModelBase
 public:
 	virtual void SetModel(APlayerCharacter* PlayerCharacter);
 protected:
-	APlayerCharacter* Model;
+	UPROPERTY()
+	TObjectPtr<APlayerCharacter> Model = nullptr;
 };

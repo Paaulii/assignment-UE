@@ -56,22 +56,22 @@ protected:
 	virtual void PostInitializeComponents() override;
 
 	UPROPERTY(BlueprintReadOnly)
-	float Energy;
+	float Energy = 0.0f;
 
 	UPROPERTY(BlueprintReadOnly)
-	float Health;
+	float Health = 0.0f;
 
 	UPROPERTY(EditDefaultsOnly)
-	float MaxEnergy;
+	float MaxEnergy = 0.0f;
 
 	UPROPERTY(EditDefaultsOnly)
-	float SlotsCount;
-
-	UPROPERTY(EditDefaultsOnly)
-	float HealthIncrementValue;
+	float HealthIncrementValue = 0.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float MaxHealth;
+	float MaxHealth = 0.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+	uint8 SlotsCount = 0;
 
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 	UInputAction* PauseAction;
@@ -96,6 +96,6 @@ private:
 	void ChangeHealth();
 	void HandleSlotActivation(int8 SlotNumber);
 
-	float EnergyIncrementValue;
+	float EnergyIncrementValue = 0.0f;
 	EHealthIncrementMode IncrementMode;
 };

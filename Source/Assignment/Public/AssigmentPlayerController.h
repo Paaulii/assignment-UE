@@ -27,29 +27,34 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI|Widget")
-	TSubclassOf<UPauseMenuWidget> PauseMenuWidgetClass;
+	TSubclassOf<UPauseMenuWidget> PauseMenuWidgetClass = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI|Widget")
-	TSubclassOf<UHUDWidget> HudWidgetClass;
+	TSubclassOf<UHUDWidget> HudWidgetClass = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI|Viewmodels")
-	TSubclassOf<UHUDViewModel> HudViewModelClass;
+	TSubclassOf<UHUDViewModel> HudViewModelClass = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI|Viewmodels")
-	TSubclassOf<UPauseMenuViewModel> PauseMenuViewModelClass;
+	TSubclassOf<UPauseMenuViewModel> PauseMenuViewModelClass = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = Input)
-	UInputMappingContext* DefaultMappingContext;
+	UInputMappingContext* DefaultMappingContext = nullptr;
 private:
 	void SetupUI();
 
 	UPROPERTY()
-	TObjectPtr<UPauseMenuWidget> PauseMenuWidget;
+	TObjectPtr<UPauseMenuWidget> PauseMenuWidget = nullptr;
 
 	UPROPERTY()
-	TObjectPtr<UHUDWidget> HudWidget;
+	TObjectPtr<UHUDWidget> HudWidget = nullptr;
 
-	APlayerCharacter* PlayerCharacter;
-	UHUDViewModel* HudViewModel;
-	UPauseMenuViewModel* PauseMenuViewModel;
+	UPROPERTY()
+	TObjectPtr<APlayerCharacter> PlayerCharacter = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<UHUDViewModel> HudViewModel = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<UPauseMenuViewModel> PauseMenuViewModel = nullptr;
 };
