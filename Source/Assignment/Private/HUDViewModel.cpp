@@ -7,10 +7,15 @@ void UHUDViewModel::SetModel(APlayerCharacter* PlayerCharacter)
 	Super::SetModel(PlayerCharacter);
 
 	Model->OnHealthChanged.AddDynamic(this, &UHUDViewModel::SetProgressFillPercentage);
+	Model->OnEnergyChanged.AddDynamic(this, &UHUDViewModel::SetEnergyFillPercentage);
 	MaxHealth = Model->GetMaxHealth();
 	LowHealthTreshold = MaxHealth * 0.25f;
 	SetProgressFillPercentage(Model->GetHealth());
 	LastHealthState = EHealthState::Default;
+
+	MaxEnergy = Model->GetMaxEnergy();
+	EnergyIncrementValue = Model->GetEnergyIncrementValue();
+	SetEnergyFillPercentage(Model->GetEnergy());
 }
 
 void UHUDViewModel::SetProgressFillPercentage(float Value)
@@ -21,6 +26,25 @@ void UHUDViewModel::SetProgressFillPercentage(float Value)
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ProgressFillPercentage);
 		SetHealth(Value);
 		ChangeHealthState();
+	}
+}
+
+void UHUDViewModel::SetEnergyFillPercentage(float Value)
+{
+	float Percentage = Value / MaxEnergy;
+	if (UE_MVVM_SET_PROPERTY_VALUE(EnergyFillPercentage, Percentage))
+	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(EnergyFillPercentage);
+		SetActiveSlotsNumber(Value);
+	}
+}
+
+void UHUDViewModel::SetActiveSlotsNumber(uint8 Value)
+{
+	float SlotsNumber = FMath::Floor(Value / EnergyIncrementValue);
+	if (UE_MVVM_SET_PROPERTY_VALUE(ActiveSlotsNumber, SlotsNumber))
+	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ActiveSlotsNumber);
 	}
 }
 

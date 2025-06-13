@@ -7,6 +7,12 @@ APlayerCharacter::APlayerCharacter()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
+void APlayerCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	EnergyIncrementValue = MaxEnergy / SlotsCount;
+}
+
 float APlayerCharacter::GetMaxHealth()
 {
 	return MaxHealth;
@@ -15,6 +21,21 @@ float APlayerCharacter::GetMaxHealth()
 float APlayerCharacter::GetHealth()
 {
 	return Health;
+}
+
+float APlayerCharacter::GetEnergy()
+{
+	return Energy;
+}
+
+float APlayerCharacter::GetMaxEnergy()
+{
+	return MaxEnergy;
+}
+
+float APlayerCharacter::GetEnergyIncrementValue()
+{
+	return EnergyIncrementValue;
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -29,6 +50,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(RightSlotActivateAction, ETriggerEvent::Started, this, &APlayerCharacter::HandleRightSlotActivate);
 	}
 }
+
 
 void APlayerCharacter::PauseActionButtonPressed()
 {
@@ -46,7 +68,7 @@ void APlayerCharacter::ChangeHealth()
 		IncrementMode = EHealthIncrementMode::Increment;
 	}
 
-	Health += IncrementMode == EHealthIncrementMode::Increment?  HealthDecrementValue : -HealthDecrementValue;
+	Health += IncrementMode == EHealthIncrementMode::Increment?  HealthIncrementValue : -HealthIncrementValue;
 	OnHealthChanged.Broadcast(Health);
 }
 

@@ -20,6 +20,12 @@ protected:
 	UPROPERTY(BlueprintReadOnly, FieldNotify, Setter, Category = "ViewModel")
 	float ProgressFillPercentage;
 
+	UPROPERTY(BlueprintReadOnly, FieldNotify, Setter, Category = "ViewModel")
+	float EnergyFillPercentage;
+
+	UPROPERTY(BlueprintReadOnly, FieldNotify, Setter, Category = "ViewModel")
+	uint8 ActiveSlotsNumber;
+
 	UPROPERTY(BlueprintReadOnly, FieldNotify,Setter, Category = "ViewModel")
 	float Health;
 private:
@@ -29,8 +35,18 @@ private:
 
 	float LowHealthTreshold;
 
+	float MaxEnergy;
+
+	uint8 EnergyIncrementValue;
+
 	UFUNCTION()
 	void SetProgressFillPercentage(float Value);
+
+	UFUNCTION()
+	void SetEnergyFillPercentage(float Value);
+
+	UFUNCTION()
+	void SetActiveSlotsNumber(uint8 Value);
 
 	UFUNCTION()
 	void SetHealth(float Value);

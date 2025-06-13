@@ -27,16 +27,22 @@ public:
 	APlayerCharacter();
 	float GetMaxHealth();
 	float GetHealth();
+	float GetEnergy();
+	float GetMaxEnergy();
+	float GetEnergyIncrementValue();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 protected:
-	UPROPERTY(EditDefaultsOnly)
-	float EnergyIncrementValue;
-
-	UPROPERTY(EditDefaultsOnly)
-	float HealthDecrementValue;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float Energy;
+
+	UPROPERTY(EditDefaultsOnly)
+	float MaxEnergy;
+
+	UPROPERTY(EditDefaultsOnly)
+	float SlotsCount;
+
+	UPROPERTY(EditDefaultsOnly)
+	float HealthIncrementValue;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float Health;
@@ -58,7 +64,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 	UInputAction* RightSlotActivateAction;
+
+	virtual void PostInitializeComponents() override;
 private:
+	float EnergyIncrementValue;
 	EHealthIncrementMode IncrementMode;
 	void PauseActionButtonPressed();
 	void ChangeHealth();
