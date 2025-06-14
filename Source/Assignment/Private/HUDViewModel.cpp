@@ -10,45 +10,37 @@ void UHUDViewModel::SetModel(APlayerCharacter* PlayerCharacter)
 		return;
 	}
 
-	Model->OnHealthChanged.AddDynamic(this, &UHUDViewModel::SetProgressFillPercentage);
-	Model->OnEnergyChanged.AddDynamic(this, &UHUDViewModel::SetEnergyFillPercentage);
+	SlotsActivationState.Add(ESlotType::Left, false);
+	SlotsActivationState.Add(ESlotType::Middle, false);
+	SlotsActivationState.Add(ESlotType::Right, false);
+
+	Model->OnHealthChanged.AddDynamic(this, &UHUDViewModel::SetHealthFillPercentage);
+	Model->OnSlotPressed.AddDynamic(this, &UHUDViewModel::OnSlotPressed);
 
 	MaxHealth = Model->GetMaxHealth();
 	LowHealthTreshold = MaxHealth * LowHealthPercentageThreshold;
-	SetProgressFillPercentage(Model->GetHealth());
-
-	MaxEnergy = Model->GetMaxEnergy();
-	EnergyIncrementValue = Model->GetEnergyIncrementValue();
-	SetEnergyFillPercentage(Model->GetEnergy());
+	SetHealthFillPercentage(Model->GetHealth());
 }
 
-void UHUDViewModel::SetProgressFillPercentage(float Value)
+void UHUDViewModel::OnSlotPressed(ESlotType SlotType) 
+{
+	if (SlotsActivationState.Contains(SlotType)) 
+	{
+		bool* bSlotActive = SlotsActivationState.Find(SlotType);
+		*bSlotActive = !*bSlotActive;
+		UpdateSlotFillPercentage();
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(SlotsActivationState);
+	}
+}
+
+void UHUDViewModel::SetHealthFillPercentage(float Value)
 {
 	float Percentage = Value / MaxHealth;
-	if (UE_MVVM_SET_PROPERTY_VALUE(ProgressFillPercentage, Percentage))
+	if (UE_MVVM_SET_PROPERTY_VALUE(HealthFillPercentage, Percentage))
 	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ProgressFillPercentage);
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(HealthFillPercentage);
 		SetHealth(Value);
 		ChangeHealthState();
-	}
-}
-
-void UHUDViewModel::SetEnergyFillPercentage(float Value)
-{
-	float Percentage = Value / MaxEnergy;
-	if (UE_MVVM_SET_PROPERTY_VALUE(EnergyFillPercentage, Percentage))
-	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(EnergyFillPercentage);
-		SetActiveSlotsNumber(Value);
-	}
-}
-
-void UHUDViewModel::SetActiveSlotsNumber(uint8 Value)
-{
-	float SlotsNumber = FMath::Floor(Value / EnergyIncrementValue);
-	if (UE_MVVM_SET_PROPERTY_VALUE(ActiveSlotsNumber, SlotsNumber))
-	{
-		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(ActiveSlotsNumber);
 	}
 }
 
@@ -57,6 +49,27 @@ void UHUDViewModel::SetHealth(float Value)
 	if (UE_MVVM_SET_PROPERTY_VALUE(Health, Value))
 	{
 		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(Health);
+	}
+}
+
+void UHUDViewModel::UpdateSlotFillPercentage()
+{
+	uint8 SlotsNumber = SlotsActivationState.Num();
+	uint8 ActiveSlots = 0;
+
+	for (auto& Element : SlotsActivationState)
+	{
+		if (Element.Value == true) 
+		{
+			ActiveSlots++;
+		}
+	}
+
+	ActiveSlotsCount = ActiveSlots;
+	float Percentage = (float)ActiveSlots / (float)SlotsNumber;
+	if (UE_MVVM_SET_PROPERTY_VALUE(SlotsFillPercentage, Percentage))
+	{
+		UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(SlotsFillPercentage);
 	}
 }
 

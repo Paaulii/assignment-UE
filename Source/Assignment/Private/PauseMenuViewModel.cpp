@@ -9,7 +9,7 @@ void UPauseMenuViewModel::SetModels(APlayerCharacter* PlayerCharacter, AAssigmen
 {
 	Super::SetModel(PlayerCharacter);
 	PlayerController = Controller;
-	Model->PauseButtonPressed.AddDynamic(this, &UPauseMenuViewModel::TogglePauseMenu);
+	Model->OnPauseButtonPressed.AddDynamic(this, &UPauseMenuViewModel::TogglePauseMenu);
 }
 
 void UPauseMenuViewModel::TogglePauseMenu()

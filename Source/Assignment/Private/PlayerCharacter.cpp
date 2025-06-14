@@ -1,6 +1,5 @@
 #include "PlayerCharacter.h"
 #include "EnhancedInputComponent.h"
-#include "Enums.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -11,8 +10,6 @@ void APlayerCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	Health = MaxHealth;
-	Energy = 0;
-	EnergyIncrementValue = MaxEnergy / SlotsCount;
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -31,7 +28,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::PauseActionButtonPressed()
 {
-	PauseButtonPressed.Broadcast();
+	OnPauseButtonPressed.Broadcast();
 }
 
 void APlayerCharacter::ChangeHealth()
@@ -53,21 +50,15 @@ void APlayerCharacter::ChangeHealth()
 
 void APlayerCharacter::HandleLeftSlotActivation()
 {
-	HandleSlotActivation(1);
+	OnSlotPressed.Broadcast(ESlotType::Left);
 }
 
 void APlayerCharacter::HandleMiddleSlotActivation()
 {
-	HandleSlotActivation(2);
+	OnSlotPressed.Broadcast(ESlotType::Middle);
 }
 
 void APlayerCharacter::HandleRightSlotActivation()
 {
-	HandleSlotActivation(3);
-}
-
-void APlayerCharacter::HandleSlotActivation(int8 SlotNumber)
-{
-	Energy = EnergyIncrementValue * SlotNumber;
-	OnEnergyChanged.Broadcast(Energy);
+	OnSlotPressed.Broadcast(ESlotType::Right);
 }
